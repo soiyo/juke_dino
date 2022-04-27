@@ -1,4 +1,4 @@
-# 그림 설명과 소리넣기, 타이머넣기,
+# 그림 설명과 소리넣기, 타이머넣기,날짜띄우기
 import os
 import pygame
 import sys

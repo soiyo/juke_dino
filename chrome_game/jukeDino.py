@@ -1,11 +1,9 @@
-# 메인화면 만들기
-from cProfile import run
+from inspect import isgenerator
 import os
 import pygame
 import sys
 from pygame import *
 from datetime import datetime
-
 
 current_path = os.path.dirname(__file__)  # 현재 파일의 위치 반환
 image_path = os.path.join(current_path, "images")  # images 폴더 위치 반환
@@ -19,9 +17,8 @@ background = pygame.image.load(
 character = pygame.image.load(
     os.path.join(image_path, "dino1.png"))
 
-
 # 소리초기화
-se_ = None
+se_afternoon = None
 se_bug = None
 se_button = None
 se_chill = None
@@ -39,13 +36,15 @@ se_sunny = None
 se_woman = None
 
 
-def main():
+def play():
     # 소리데이터
-    global se_coin, se_morning, se_, se_night, se_sleep, se_chill, se_npc, se_clear, se_loading, se_fire, se_bug, se_opening, se_quest, se_sunny, se_button, se_woman
+    global se_afternoon, se_coin, se_morning, se_, se_night, se_sleep, se_chill, se_npc, se_clear, se_loading, se_fire, se_bug, se_opening, se_quest, se_sunny, se_button, se_woman
     # 초기화
+
     pygame.init()
     # 화면 타이틀 설정
-    pygame.display.set_caption("Dino world")  # 게임 이름
+    pygame.display.set_caption("Juke Dino")  # 게임 이름
+
     # Font 정의
     game_font = pygame.font.Font(None, 35)
     game_result_1 = "Good Afternoon"
@@ -107,6 +106,8 @@ def main():
         os.path.join(music_path, "sunny.mp3"))
     se_woman = pygame.mixer.Sound(
         os.path.join(music_path, "woman.mp3"))
+
+    se_clear.play()
 
     character_size = character.get_rect().size  # 이미지의 크기를 구해옴
     character_width = character_size[0]  # 캐릭터의 가로 크기
@@ -204,7 +205,7 @@ def main():
     npc_width = npc_size[0]  # 캐릭터의 가로 크기x
     npc_height = npc_size[1]  # 캐릭터의 세로 크기
     # 화면 가로의 절반 크기에 해당하는 곳에 위치 (가로)
-    npc_x_pos = 420
+    npc_x_pos = 400
     # 화면 세로 크기 가장 아래에 해당하는 곳에 위치 (세로)
     npc_y_pos = 400
 
@@ -215,7 +216,7 @@ def main():
     opening_width = opening_size[0]  # 캐릭터의 가로 크기x
     opening_height = opening_size[1]  # 캐릭터의 세로 크기
     # 화면 가로의 절반 크기에 해당하는 곳에 위치 (가로)
-    opening_x_pos = 300
+    opening_x_pos = 240
     # 화면 세로 크기 가장 아래에 해당하는 곳에 위치 (세로)
     opening_y_pos = 400
 
@@ -279,23 +280,7 @@ def main():
                     screen = pygame.display.set_mode(
                         (screen_width, screen_height))
                 elif event.key == pygame.K_SPACE:  # space 누르면 모든 음악 멈춤
-                    se_afternoon.stop()
-                    se_bug.stop()
-                    se_button.stop()
-                    se_chill.stop()
-                    se_clear.stop()
-                    se_coin.stop()
-                    se_fire.stop()
-                    se_loading.stop()
-                    se_morning.stop()
-                    se_night.stop()
-                    se_npc.stop()
-                    se_opening.stop()
-                    se_quest.stop()
-                    se_sleep.stop()
-                    se_sunny.stop()
-                    se_woman.stop()
-                    se_coin.play()
+                    song_off()
                     msg = game_font.render(
                         sound_off, True, (0, 0, 0))
                     msg_rect = msg.get_rect(
@@ -314,9 +299,9 @@ def main():
                     pygame.display.update()
                     pygame.time.delay(1000)
                     # if event.type == pygame.KEYDOWN:  # 방향키를 떼면 주인공 캐릭터 멈춤
-                    #     if event.key == pygame.K_Y:
+                    #     if event.key == pygame.K_a:
                     #         running = False
-                    #     elif event.key == pygame.K_N:
+                    #     elif event.key == pygame.K_n:
                     #         running = True
 
             if event.type == pygame.KEYUP:  # 방향키를 떼면 주인공 캐릭터 멈춤
@@ -398,6 +383,7 @@ def main():
             print("충돌했어요")
             character_y_pos = afternoon_y_pos+afternoon_height
             # 충돌시 사운드
+            song_off()
             se_afternoon.play()
             se_coin.play()
             msg = game_font.render(
@@ -414,6 +400,7 @@ def main():
             print("충돌했어요")
             character_y_pos = bug_y_pos+bug_height
             # 충돌시 사운드
+            song_off()
             se_bug.play()
             se_coin.play()
             msg = game_font.render(
@@ -430,6 +417,7 @@ def main():
             print("충돌했어요")
             character_y_pos = chill_y_pos+chill_height
             # 충돌시 사운드
+            song_off()
             se_chill.play()
             se_coin.play()
             msg = game_font.render(
@@ -446,6 +434,7 @@ def main():
             print("충돌했어요")
             character_y_pos = clear_y_pos+clear_height
             # 충돌시 사운드
+            song_off()
             se_clear.play()
             se_coin.play()
             msg = game_font.render(
@@ -462,6 +451,7 @@ def main():
             print("충돌했어요")
             character_y_pos = fire_y_pos+fire_height
             # 충돌시 사운드
+            song_off()
             se_fire.play()
             se_coin.play()
             msg = game_font.render(
@@ -477,8 +467,8 @@ def main():
         if character_rect.colliderect(morning_rect):
             print("충돌했어요")
             character_y_pos = morning_y_pos+morning_height
-
             # 충돌시 사운드
+            song_off()
             se_morning.play()
             se_coin.play()
             msg = game_font.render(
@@ -495,6 +485,7 @@ def main():
             print("충돌했어요")
             character_y_pos = night_y_pos+night_height
             # 충돌시 사운드
+            song_off()
             se_night.play()
             se_coin.play()
             msg = game_font.render(
@@ -511,6 +502,7 @@ def main():
             print("충돌했어요")
             character_y_pos = npc_y_pos+npc_height
             # 충돌시 사운드
+            song_off()
             se_npc.play()
             se_coin.play()
             msg = game_font.render(
@@ -527,6 +519,7 @@ def main():
             print("충돌했어요")
             character_y_pos = opening_y_pos+opening_height
             # 충돌시 사운드
+            song_off()
             se_opening.play()
             se_coin.play()
             msg = game_font.render(
@@ -543,6 +536,7 @@ def main():
             print("충돌했어요")
             character_y_pos = quest_y_pos+quest_height
             # 충돌시 사운드
+            song_off()
             se_quest.play()
             se_coin.play()
             msg = game_font.render(
@@ -559,6 +553,7 @@ def main():
             print("충돌했어요")
             character_y_pos = sleep_y_pos+sleep_height
             # 충돌시 사운드
+            song_off()
             se_sleep.play()
             se_coin.play()
             msg = game_font.render(
@@ -575,6 +570,7 @@ def main():
             print("충돌했어요")
             character_y_pos = sunny_y_pos+sunny_height
             # 충돌시 사운드
+            song_off()
             se_sunny.play()
             se_coin.play()
             msg = game_font.render(
@@ -605,8 +601,8 @@ def main():
 
         # 타이머:경과시간 계산 (오버시간- 게임시작시간=0=게임종료)
         sec = int(pygame.time.get_ticks()/1000)
-        timer = game_font.render("Time Laps : " +
-                                 str(int(pygame.time.get_ticks()/1000/60))+"m"+str(sec)+"s", True, (0, 0, 0))  # 출력할 글자, True, 글자 색상
+        timer = game_font.render("Playtime : " +
+                                 str(int(pygame.time.get_ticks()/1000/60))+"m", True, (0, 0, 0))  # 출력할 글자, True, 글자 색상
         screen.blit(timer, (10, 10))
         msg = game_font.render(
             game_now, True, (0, 0, 0))
@@ -616,6 +612,121 @@ def main():
             'Play Now : '+song_msg, True, (0, 0, 0))
         screen.blit(msg_2, (540, 40))
         pygame.display.update()  # 게임화면을 다시 그리기!
+
+
+def intro():
+    global sec, se_opening
+
+    pygame.init()
+    screen_width = 840
+    screen_height = 600
+    screen = pygame.display.set_mode((screen_width, screen_height))
+    pygame.display.set_caption('Juke Dino')
+    game_font = pygame.font.Font(None, 35)
+    background = pygame.image.load(
+        os.path.join(image_path, "white.png"))
+    character = pygame.image.load(
+        os.path.join(image_path, "dino1.png"))
+    character_size = character.get_rect().size
+    character_width = character_size[0]
+    character_height = character_size[1]
+    character_x_pos = (screen_width/2-character_width/2)
+    character_y_pos = (screen_height/2)
+
+    se_opening = pygame.mixer.Sound(
+        os.path.join(music_path, "opening.mp3"))
+    se_opening.play()
+
+    to_x = 0
+    to_y = 0
+    loading = "Pleas Wait ..."
+
+    running = True
+    while running:
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    to_x -= 2
+
+                elif event.key == pygame.K_RIGHT:
+                    to_x += 2
+                elif event.key == pygame.K_UP:
+                    to_y -= 2
+                elif event.key == pygame.K_DOWN:
+                    to_y += 2
+                elif event.key == pygame.K_SPACE:
+                    sec = 0
+                    msg = game_font.render(
+                        loading, True, (0, 0, 0))
+                    msg_rect = msg.get_rect(
+                        center=(int(screen_width / 2), 400))
+                    screen.blit(msg, msg_rect)
+                    pygame.display.update()
+                    pygame.time.delay(500)
+                    se_opening.stop()
+                    play()
+
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+                    to_x = 0
+                elif event.key == pygame.K_UP or event.key == pygame.K_DOWN:
+                    to_y = 0
+
+        character_x_pos += to_x
+        character_y_pos += to_y
+
+        if character_x_pos < 0:
+            character_x_pos = 0
+        elif character_x_pos > screen_width-character_width:
+            character_x_pos = screen_width-character_width
+
+        if character_y_pos < 0:
+            character_y_pos = 0
+        elif character_y_pos > screen_height-character_height:
+            character_y_pos = screen_height-character_height
+
+        screen.blit(background, (0, 0))
+        screen.blit(character, (character_x_pos, character_y_pos))
+        msg = game_font.render(
+            'Juke Dino', True, (0, 0, 0))
+        msg_rect = msg.get_rect(
+            center=(int(screen_width / 2), 200))
+        screen.blit(msg,  msg_rect)
+        msg = game_font.render(
+            'Press [SPACE] to Start', True, (0, 0, 0))
+        msg_rect = msg.get_rect(
+            center=(int(screen_width / 2), 500))
+        screen.blit(msg,  msg_rect)
+        pygame.display.update()  # 게임화면을 다시 그리기!
+
+
+def main():
+    intro()
+
+
+def song_off():
+    global se_afternoon, se_coin, se_morning, se_, se_night, se_sleep, se_chill, se_npc, se_clear, se_loading, se_fire, se_bug, se_opening, se_quest, se_sunny, se_button, se_woman
+    se_afternoon.stop()
+    se_bug.stop()
+    se_button.stop()
+    se_chill.stop()
+    se_clear.stop()
+    se_coin.stop()
+    se_fire.stop()
+    se_loading.stop()
+    se_morning.stop()
+    se_night.stop()
+    se_npc.stop()
+    se_opening.stop()
+    se_quest.stop()
+    se_sleep.stop()
+    se_sunny.stop()
+    se_woman.stop()
+    se_coin.play()
 
 
 if __name__ == '__main__':
