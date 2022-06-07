@@ -1,0 +1,3 @@
+driver = webdriver.Chrome(
+    executable_path="/Users/raymond/Documents/scrapping/chromedriver"
+)
